@@ -44,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'storage.middleware.ReferralMiddleware'
 ]
 
 ROOT_URLCONF = 'site_self_storage.urls'
@@ -105,6 +106,8 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = 'media/'
+
+SITE_URL = 'http://localhost:8000'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
