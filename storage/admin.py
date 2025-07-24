@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClickCounter
+from .models import ClickCounter, Order, Box, BoxTariff, Client, Courier
 from django.conf import settings
 from django.utils.html import format_html
 
@@ -25,3 +25,24 @@ class ClickCounterAdmin(admin.ModelAdmin):
         )
 
     referral_link.short_description = "Реферальная ссылка"
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Courier)
+class CourierAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(BoxTariff)
+class BoxTariffAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Box)
+class BoxAdmin(admin.ModelAdmin):
+    pass
