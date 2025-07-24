@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+    <div class="top-up pt-5 d-flex justify-content-center align-items-center">
+        <form method="POST" action="{% url 'users:register' %}" class="d-flex flex-column align-items-center" style="max-width: 420px">
+            {% csrf_token %}
+        <h1 class="fw-bold mb-3">Регистрация</h1>
+        <input type="text" name="{{ form.first_name.name }}" required
+               class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+               SelfStorage__bg_lightgrey"
+               placeholder="Имя" value="{{ form.first_name.value|default_if_none:'' }}">
+        {{ form.first_name.errors }}
+        <input type="text" name="{{ form.last_name.name }}" required
+           class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+           SelfStorage__bg_lightgrey"
+           placeholder="Фамилия" value="{{form.last_name.value|default_if_none:'' }}">
+        {{ form.last_name.errors }}
+
+        <input type="text" name="{{ form.username.name }}" required
+               class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+               SelfStorage__bg_lightgrey"
+               placeholder="E-mail" value="{{ form.username.value|default_if_none:'' }}">
+        {{ form.username.errors }}
+
+        <input type="text" name="{{ form.phone.name }}" required
+               class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+               SelfStorage__bg_lightgrey"
+               placeholder="Телефон" value="{{ form.phone.value|default_if_none:'' }}">
+        {{ form.phone.errors }}
+
+        <input type="text" name="{{ form.address.name }}" required
+               class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+               SelfStorage__bg_lightgrey"
+               placeholder="Адрес" value="{{ form.address.value|default_if_none:'' }}">
+        {{ form.address.errors }}
+
+        <input type="password" name="{{ form.password1.name }}" required
+               class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+               SelfStorage__bg_lightgrey"
+               placeholder="Пароль">
+        {{ form.password1.errors }}
+
+        <input type="password" name="{{ form.password2.name }}" required
+               class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
+               SelfStorage__bg_lightgrey"
+               placeholder="Подтверждение пароля">
+        {{ form.password2.errors }}
+
+        <span class="fw-light SelfStorage_grey">Нажимая на кнопку, вы подтверждаете свое <a href="{% static 'Consent to the processing of personal data.pdf' %}" class="SelfStorage_grey">согласие на обработку персональных данных</a></span>
+
+        <button type="submit" class="btn border-8 py-3 px-5 mt-4 mb-2 w-100
+        text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange">Зарегистрироваться</button>
+
+        <span>Уже зарегистрированы? <a href="{% url 'users:login' %}" class="SelfStorage_orange">Войти в личный кабинет</a></span>
+        </form>
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}
+
+
