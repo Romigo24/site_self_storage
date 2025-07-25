@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.crypto import get_random_string
+from users.models import CustomUser
 
 class Courier(models.Model):
     name = models.CharField(max_length=100)
@@ -70,6 +71,7 @@ class Order(models.Model):
                                       blank=True, null=True)
     node = models.TextField(null=True, blank=True)
     promo = models.ForeignKey(Promo, on_delete=models.CASCADE, null=True, blank=True)
+    cuser = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
 
     courier = models.ForeignKey(
         Courier,
