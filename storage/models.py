@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 from users.models import CustomUser
+from datetime import date
 
 class Courier(models.Model):
     name = models.CharField(max_length=100)
@@ -52,18 +53,7 @@ class Box(models.Model):
         return f'{self.id}, {self.cell_size.size}'
 
 
-class Client(models.Model):
-    client_name = models.CharField(max_length=200)
-    phone = models.CharField(max_length=200)
-    fio = models.CharField(max_length=200)
-
-    def __str__(self):
-        return f'{self.client_name},'
-
-
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    contacts = models.CharField(max_length=100, blank=True)
     start_storage = models.DateField()
     end_storage = models.DateField()
     cell = models.ForeignKey(Box, on_delete=models.CASCADE)
@@ -82,7 +72,7 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f'{self.client.client_name}, {self.contacts}'
+        return f'{self.cuser.first_name}, {self.cuser.phone}'
 
     #Добавить подсчет промокода
     def save(self, *args, **kwargs):
@@ -90,6 +80,13 @@ class Order(models.Model):
         days = (self.end_storage - self.start_storage).days
         self.total_price = days * price_per_day
         super().save(*args, **kwargs)
+
+    @property
+    def days_left(self):
+        if self.end_storage:
+            return (self.end_storage - date.today()).days
+        return None
+
 
 
 class ClickCounter(models.Model):

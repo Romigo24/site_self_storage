@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Арендовать бокс{% endblock %}
+{% block content %}
+
+{% if user.is_authenticated %}
+    <main class="container mt-header ">
+        <div class="row" role="tablist">
+            {% include "includes/small-menu.html" %}
+
+            <div class="col-lg-9">
+                <div class="card tab-content p-5">
+                    <div class="tab-pane fade show active" id="LK" role="tabpanel" aria-labelledby="LK-tab">
+                        <h2>Создать заказ</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.start_storage.label_tag }}<br>
+        {{ form.start_storage }}
+    </div>
+    <div class="mb-3">
+        {{ form.end_storage.label_tag }}<br>
+        {{ form.end_storage }}
+    </div>
+    <div class="mb-3">
+        {{ form.cell.label_tag }}<br>
+        {{ form.cell }}
+    </div>
+    <div class="mb-3">
+        {{ form.promo.label_tag }}<br>
+        {{ form.promo }}
+    </div>
+    <div class="mb-3">
+        {{ form.node.label_tag }}<br>
+        {{ form.node }}
+    </div>
+    <button type="submit" class="btn btn-primary">Оформить заказ</button>
+</form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+{% else %}
+    <main class="container mt-header">
+        <div class="row top-up butt-up" role="tablist">
+            <span class="fs_24 ">Войдите в учетную запись
+                <a class="fs_24 SelfStorage_orange" href=
+                        "{% url 'users:login' %}">войти</a>,
+                 или
+                 <a class=" fs_24 SelfStorage_orange" href=
+                         "{% url 'users:register' %}">зарегистрируйтесь</a>.
+            </span>
+        </div>
+    </main>
+{% endif %}
+{% endblock %}

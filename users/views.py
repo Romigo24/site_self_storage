@@ -12,7 +12,7 @@ def register_user(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('storage:my_rent')
+            return redirect('storage:lk')
     else:
         form = CustomUserCreationForm()
     return render(
@@ -27,7 +27,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('storage:my_rent')
+            return redirect('storage:lk')
         else:
             messages.error(request, 'Неверный логин или пароль')
     else:

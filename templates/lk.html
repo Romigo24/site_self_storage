@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Личный кабинет{% endblock %}
+{% block content %}
+
+{% if user.is_authenticated %}
+    <main class="container mt-header ">
+        <div class="row" role="tablist">
+            {% include "includes/small-menu.html" %}
+            <div class="col-lg-9">
+                <div class="card tab-content p-5">
+                    <div class="tab-pane fade show active" id="LK" role="tabpanel" aria-labelledby="LK-tab">
+                        <div class="row">
+                            <div class="col-12 col-sm-5 d-flex flex-column align-items-center">
+                                <img src="{{ user.photo.url }}" class="rounded-pill mb-3" alt="">
+                                <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                            </div>
+                            <div class="col-12 col-sm-7 d-flex flex-column">
+                                <form>
+                                    <label class="fs_24 SelfStorage_green ms-2" for="EMAIL">E-mail</label>
+                                    <input type="email" name="EMAIL_EDIT" id="EMAIL" class="form-control fs_24 ps-2 SelfStorage__input" value="{{ user.username }}" disabled>
+                                    <label class="fs_24 SelfStorage_green ms-2" for="PHONE">Телефон</label>
+                                    <input type="tel" name="PHONE_EDIT" id="PHONE" class="form-control fs_24 ps-2 SelfStorage__input" value="{{ user.phone }}" disabled>
+                                    <label class="fs_24 SelfStorage_green ms-2" for="PASSWORD">Пароль</label>
+                                    <input type="password" name="PASSWORD_EDIT" id="PASSWORD" class="form-control fs_24 ps-2 SelfStorage__input"  value="{{ user.password }}" disabled>
+                                    <button type="submit" class="btn SelfStorage_green ps-1" id="save" style="display: none">Сохранить</button>
+                                    <a class="btn SelfStorage_orange ps-1" id="edit">Редактировать</a>
+                                    <script>
+                                        document.getElementById('edit').addEventListener('click', e => {
+                                            e.preventDefault()
+                                            document.getElementById('EMAIL').disabled = false
+                                            document.getElementById('PHONE').disabled = false
+                                            document.getElementById('PASSWORD').disabled = false
+                                            document.getElementById('PASSWORD').type = 'text'
+                                            document.getElementById('edit').style.display = 'none'
+                                            document.getElementById('save').style.display = 'inline-block'
+                                        })
+                                        document.getElementById('save').addEventListener('click', () => {
+                                            setTimeout(() => {
+                                                document.getElementById('EMAIL').disabled = true
+                                                document.getElementById('PHONE').disabled = true
+                                                document.getElementById('PASSWORD').disabled = true
+                                                document.getElementById('PASSWORD').type = 'password'
+                                                document.getElementById('edit').style.display = 'inline-block'
+                                                document.getElementById('save').style.display = 'none'
+                                            }, 0)
+                                        })
+                                    </script>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% else %}
+    <main class="container mt-header">
+        <div class="row top-up butt-up" role="tablist">
+            <span class="fs_24 ">Войдите в учетную запись
+                <a class="fs_24 SelfStorage_orange" href=
+                        "{% url 'users:login' %}">войти</a>,
+                 или
+                 <a class=" fs_24 SelfStorage_orange" href=
+                         "{% url 'users:login' %}">зарегистрируйтесь</a>.
+            </span>
+        </div>
+    </main>
+{% endif %}
+{% endblock %}
