@@ -19,14 +19,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from storage.views import index
+from storage.views import index, boxes, faq, my_rent_empty, my_rent
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('boxes/', boxes, name='boxes'),
+    path('faq/', faq, name='faq'),
+    path('my_rent_empty/', my_rent_empty, name='my_rent_empty'),
+    path('my_rent/', my_rent, name='my_rent'),
     path('', index, name='index'),
-] #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
