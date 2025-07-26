@@ -2,6 +2,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from datetime import timedelta
 from storage.models import Order
 from .forms import OrderForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+
 
 def index(request):
     return render(request, 'index.html')
@@ -55,7 +58,21 @@ def order(request):
     return render(request, 'order.html')
 
 
+@login_required
 def lk(request):
+    if request.method == 'POST':
+        user = request.user
+        user.username = request.POST.get('username')
+        user.phone = request.POST.get('phone')
+        new_password = request.POST.get('password')
+
+        if new_password:
+            user.set_password(new_password)
+            login(request, user)
+
+        user.save()
+        return redirect('storage:lk')
+
     return render(request, 'lk.html')
 
 

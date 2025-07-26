@@ -24,3 +24,6 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} {self.phone}'

@@ -33,6 +33,19 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ['registered_at']
+    fields = [
+        'status',
+        'start_storage',
+        'end_storage',
+        'cell',
+        'cuser',
+        'total_price',
+        'node',
+        'promo',
+        'courier',
+        'registered_at',
+    ]
 
     pass
 

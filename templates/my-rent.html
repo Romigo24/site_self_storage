@@ -15,7 +15,27 @@
                                 Срок одного или нескольких заказов подходит к концу!<br>
                             </h4>
                         {% endif %}
-                        <a href="#" class="SelfStorage_orange mb-5">История аренды</a>
+
+
+                        <a href="#" class="SelfStorage_orange mb-5"  data-bs-toggle="modal" data-bs-target="#rentModal">История аренды</a>
+                        <div class="modal fade" id="rentModal" tabindex="-1" aria-labelledby="rentModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="rentModalLabel">Перечень вещей</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                              </div>
+                              <div class="modal-body">
+                                  <h5 class="SelfStorage_gray">{{ order.node }}</h5>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
                         {% if orders %}
                             {% for order in orders %}
                                 <div class="mb-5 pt-2">
@@ -39,15 +59,15 @@
                                         </form>
                                     </div>
                                     <div>
-                                        <button type="button" class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3" data-bs-toggle="modal" data-bs-target="#myModal">
+                                        <button type="button" class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3" data-bs-toggle="modal" data-bs-target="#boxModal">
                                           Открыть бокс
                                         </button>
                                     </div>
-                                    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="boxModal" tabindex="-1" aria-labelledby="boxModalLabel" aria-hidden="true">
                                       <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                           <div class="modal-header">
-                                            <h5 class="modal-title" id="myModalLabel">Перечень вещей</h5>
+                                            <h5 class="modal-title" id="boxModalLabel">Перечень вещей</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                                           </div>
                                           <div class="modal-body">
@@ -61,6 +81,7 @@
                                     </div>
                                     <a href="#" class="SelfStorage_orange">Нужна помощь?</a>
                                 </div>
+
                             {% endfor %}
                         {% else %}
                           <h4>У вас нет заказов.</h4>

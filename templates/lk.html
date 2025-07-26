@@ -16,15 +16,20 @@
                                 <h4>{{ user.first_name }} {{ user.last_name }}</h4>
                             </div>
                             <div class="col-12 col-sm-7 d-flex flex-column">
-                                <form>
+                                <form method="post" action="{% url 'users:profile_update' %}">
+                                    {% csrf_token %}
                                     <label class="fs_24 SelfStorage_green ms-2" for="EMAIL">E-mail</label>
-                                    <input type="email" name="EMAIL_EDIT" id="EMAIL" class="form-control fs_24 ps-2 SelfStorage__input" value="{{ user.username }}" disabled>
+                                    <input type="email" name="username" id="EMAIL" class="form-control fs_24 ps-2 SelfStorage__input" value="{{ user.username }}" disabled>
+
                                     <label class="fs_24 SelfStorage_green ms-2" for="PHONE">Телефон</label>
-                                    <input type="tel" name="PHONE_EDIT" id="PHONE" class="form-control fs_24 ps-2 SelfStorage__input" value="{{ user.phone }}" disabled>
+                                    <input type="tel" name="phone" id="PHONE" class="form-control fs_24 ps-2 SelfStorage__input" value="{{ user.phone }}" disabled>
+
                                     <label class="fs_24 SelfStorage_green ms-2" for="PASSWORD">Пароль</label>
-                                    <input type="password" name="PASSWORD_EDIT" id="PASSWORD" class="form-control fs_24 ps-2 SelfStorage__input"  value="{{ user.password }}" disabled>
+                                    <input type="password" name="password" id="PASSWORD" class="form-control fs_24 ps-2 SelfStorage__input" value="********" placeholder="Введите новый пароль" disabled>
+
                                     <button type="submit" class="btn SelfStorage_green ps-1" id="save" style="display: none">Сохранить</button>
                                     <a class="btn SelfStorage_orange ps-1" id="edit">Редактировать</a>
+
                                     <script>
                                         document.getElementById('edit').addEventListener('click', e => {
                                             e.preventDefault()
@@ -32,6 +37,7 @@
                                             document.getElementById('PHONE').disabled = false
                                             document.getElementById('PASSWORD').disabled = false
                                             document.getElementById('PASSWORD').type = 'text'
+                                            document.getElementById('PASSWORD').value = '';
                                             document.getElementById('edit').style.display = 'none'
                                             document.getElementById('save').style.display = 'inline-block'
                                         })
