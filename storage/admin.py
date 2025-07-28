@@ -10,7 +10,6 @@ class ClickCounterAdmin(admin.ModelAdmin):
     readonly_fields = ('clicks', 'referral_link', 'token')
     search_fields = ('token',)
 
-
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return self.readonly_fields
@@ -26,10 +25,11 @@ class ClickCounterAdmin(admin.ModelAdmin):
 
     referral_link.short_description = "Реферальная ссылка"
 
+
 @admin.register(Place)
 class OrderAdmin(admin.ModelAdmin):
-
     pass
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -49,23 +49,23 @@ class OrderAdmin(admin.ModelAdmin):
 
     pass
 
+
 @admin.register(Courier)
 class CourierAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(BoxTariff)
 class BoxTariffAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Promo)
 class PromoAdmin(admin.ModelAdmin):
-    list_display = ('name','discount','is_active')
+    list_display = ('name', 'discount', 'is_active')
     list_filter = ('is_active',)
-
-@admin.register(Place)
-class PlaceAdmin(admin.ModelAdmin):
-    pass

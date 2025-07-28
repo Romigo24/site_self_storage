@@ -1,13 +1,8 @@
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from datetime import timedelta
 from django.utils import timezone
-from storage.models import Order
-from storage.models import Order, Place, Box, BoxTariff
-from .forms import OrderForm
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import CreateOrderForm
 from django.views.decorators.http import  require_GET, require_POST

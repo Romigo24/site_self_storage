@@ -1,3 +1,4 @@
+{% load static %}
 <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -11,11 +12,11 @@
                 <form id="order_form" method="get" action="">
                     {% csrf_token %}
 
-                    <div class="form-group">
+                    <div class="form-group ">
                         <label for="{{ create_order_form.place.id_for_label }}">{{ create_order_form.place.label }}</label>
                         {{ create_order_form.place }}
                         {% if create_order_form.place.errors %}
-                            <div class="alert alert-danger mt-2">
+                            <div class="alert alert-danger mt-2 ">
                                 {{ create_order_form.place.errors }}
                             </div>
                         {% endif %}

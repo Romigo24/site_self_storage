@@ -22,7 +22,7 @@ class Courier(models.Model):
             ('foot', 'Пеший'),
         ],
         default='car',
-        verbose_name='Тип доставки',
+        verbose_name='Тип доставки'
     )
     is_active = models.BooleanField(default=True)
     class Meta:
@@ -48,16 +48,48 @@ class Promo(models.Model):
 
 class Place(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    address = models.CharField(max_length=200)
-    temperature = models.IntegerField(default=18, verbose_name="Температура на складе (°C)")
-    ceiling_height = models.DecimalField(max_digits=3, decimal_places=1, default=3.5, verbose_name="Высота потолка (м)")
-    box_capacity = models.IntegerField(verbose_name="Общее количество боксов")
-    available_boxes = models.IntegerField(verbose_name="Свободные боксы", default=0)
-    monthly_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена за месяц", default=2264)
-    is_show = models.BooleanField(default=False, blank=True, null=True)
-    image = models.ImageField(upload_to='places/', null=True, blank=True,
-                              verbose_name="Изображение склада")
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Склад'
+    )
+    address = models.CharField(
+        max_length=200,
+        verbose_name = 'Адрес'
+    )
+    temperature = models.IntegerField(
+        default=18,
+        verbose_name="Температура на складе (°C)"
+    )
+    ceiling_height = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=3.5,
+        verbose_name="Высота потолка (м)"
+    )
+    box_capacity = models.IntegerField(
+        verbose_name="Общее количество боксов"
+    )
+    available_boxes = models.IntegerField(
+        verbose_name="Свободные боксы",
+        default=0
+    )
+    monthly_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Цена за месяц",
+        default=2264
+    )
+    is_show = models.BooleanField(
+        default=False,
+        blank=True,
+        null=True
+    )
+    image = models.ImageField(
+        upload_to='places/',
+        null=True,
+        blank=True,
+        verbose_name="Изображение склада"
+    )
 
     class Meta:
         verbose_name='Склад'
