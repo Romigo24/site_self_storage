@@ -1,0 +1,221 @@
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel">Форма заказа</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="order_form" method="get" action="">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.place.id_for_label }}">{{ create_order_form.place.label }}</label>
+                        {{ create_order_form.place }}
+                        {% if create_order_form.place.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.place.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.cell.id_for_label }}">{{ create_order_form.cell.label }}</label>
+                        {{ create_order_form.cell }}
+                        {% if create_order_form.cell.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.cell.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.start_storage.id_for_label }}">{{ create_order_form.start_storage.label }}</label>
+                        {{ create_order_form.start_storage }}
+                        {% if create_order_form.start_storage.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.start_storage.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.end_storage.id_for_label }}">{{ create_order_form.end_storage.label }}</label>
+                        {{ create_order_form.end_storage }}
+                        {% if create_order_form.end_storage.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.end_storage.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.node.id_for_label }}">{{ create_order_form.node.label }}</label>
+                        {{ create_order_form.node }}
+                        {% if create_order_form.node.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.node.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.contacts.id_for_label }}">{{ create_order_form.contacts.label }}</label>
+                        {{ create_order_form.contacts }}
+                        {% if create_order_form.contacts.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.contacts.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.courier.id_for_label }}">{{ create_order_form.courier.label }}</label>
+                        {{ create_order_form.courier }}
+                        {% if create_order_form.courier.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.courier.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ create_order_form.promo.id_for_label }}">{{ create_order_form.promo.label }}</label>
+                        {{ create_order_form.promo }}
+                        {% if create_order_form.promo.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ create_order_form.promo.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Оформить заказ</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"  class="btn btn-secondary close" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ <script>
+        const placeSelect = document.getElementById('place')
+        const boxSelect = document.getElementById('box')
+
+        function resetForm() {
+
+                const form = document.getElementById('order_form');
+                if (form) form.reset();
+
+                const boxSelect = document.getElementById('box');
+                if (boxSelect) {
+                    boxSelect.innerHTML = '<option value="">Выберите бокс</option>';
+                }
+
+
+                const textFields = ['contacts', 'node', 'promo'];
+                textFields.forEach(field => {
+                    const el = document.getElementById(`id_${field}`);
+                    if (el) el.value = '';
+                });
+
+
+                const dateFields = ['start_storage', 'end_storage'];
+                dateFields.forEach(field => {
+                    const el = document.getElementById(`id_${field}`);
+                    if (el) el.value = '';
+                });
+
+
+                document.querySelectorAll('.alert-danger').forEach(el => el.remove());
+        }
+
+        const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', resetForm);
+        });
+
+
+
+        function formSubmit(formData) {
+            const url = `/create_order/`
+            fetch(url, {
+                method:'POST',
+                body:formData,
+            })
+                .then(response => response.json())
+                .catch(error => {
+                    console.log("Error",error)
+                })
+        }
+
+
+         function updateBoxes(boxesData) {
+            boxSelect.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Выберите бокс';
+            boxSelect.appendChild(defaultOption);
+            boxesData.forEach(box => {
+                const option = document.createElement('option')
+                option.value = box.id
+                option.textContent = box.cell_size_name + ' ' + box.cell_size_price
+               boxSelect.add(option);
+            });
+        }
+
+        document.getElementById('order_form').addEventListener('submit', function (e){
+           e.preventDefault();
+           const formData = new FormData(this);
+           const formParams = {};
+           for(let [key,value] of formData.entries()){
+               formParams[key] =  value;
+           }
+           if(formParams['promo']){
+               const url = `/check_promo/?promo_name=${formParams['promo']}`
+               fetch(url)
+                   .then(response => response.json())
+                   .then(data => {
+                       if(data.is_valid) {
+                           formSubmit(formData)
+                       }
+                       else{
+                            const promoErrorElement = document.getElementById('promo-error');
+                            promoErrorElement.textContent = data.error || 'Неверный промокод';
+                            promoErrorElement.classList.add('text-danger');
+                       }
+                   })
+                   .catch(error => {
+                       const promoErrorElement = document.getElementById('promo-error');
+                       promoErrorElement.textContent = error.error || 'Ошибка проверки промокода';
+                       promoErrorElement.classList.add('text-danger');
+                       console.error("Ошибка проверки промокода:", error)
+                   })
+           }
+           else{
+               formSubmit(formData)
+               console.log("Нет промо")
+           }
+        });
+
+        if(placeSelect){
+            placeSelect.addEventListener('change', function () {
+                const placeId = this.value;
+                const url = `/get_boxes/?place_id=${placeId}`
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => updateBoxes(data.boxes))
+                    .catch(error => console.log("Error",error))
+            })
+        }
+        if(boxSelect){
+            boxSelect.addEventListener('change', function () {
+                const boxId = this.value;
+                console.log(boxId);
+            })
+        }
+    </script>

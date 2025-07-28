@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClickCounter, Order, Box, BoxTariff, Client, Courier, Promo
+from .models import ClickCounter, Order, Box, BoxTariff, Courier, Promo, Place
 from django.conf import settings
 from django.utils.html import format_html
 
@@ -35,10 +35,6 @@ class OrderAdmin(admin.ModelAdmin):
 class CourierAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Client)
-class ClientAdmin(admin.ModelAdmin):
-    pass
-
 @admin.register(BoxTariff)
 class BoxTariffAdmin(admin.ModelAdmin):
     pass
@@ -51,3 +47,7 @@ class BoxAdmin(admin.ModelAdmin):
 class PromoAdmin(admin.ModelAdmin):
     list_display = ('name','discount','is_active')
     list_filter = ('is_active',)
+
+@admin.register(Place)
+class PlaceAdmin(admin.ModelAdmin):
+    pass

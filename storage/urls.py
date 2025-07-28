@@ -1,7 +1,6 @@
 from django.urls import path
 
 from . import views
-
 app_name = 'storage'
 
 urlpatterns = [
@@ -10,4 +9,11 @@ urlpatterns = [
     path('faq/', views.faq, name='faq'),
     path('my-rent/', views.my_rent, name='my_rent'),
     path('my-rent/empty/', views.my_rent_empty, name='my_rent_empty'),
+
+    path('get_boxes/', views.get_boxes, name='boxes'),
+
+    path('check_promo/',views.check_promo, name='promo'),
+
+    path('create_order/',views.create_order, name='create_order'),
+
 ]

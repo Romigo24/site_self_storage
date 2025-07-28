@@ -16,6 +16,12 @@
             <div class="col-12 col-lg-6 SelfStorage__img"></div>
         </article>
 
+        {#  Надо повесить на кнопку создания заказа      #}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderModal">
+            Открыть форму заказа
+        </button>
+        {% include 'order_create.html' %}
+
         <article class="text-center row pt-header">
             <h1 class=" fw-bold SelfStorage_green mb-5">Чем мы можем помочь?</h1>
             <div class="col-12 col-sm-4 mb-4 mb-sm-0">
@@ -200,3 +206,4 @@
         </article>
     </main>
 {% endblock %}
+

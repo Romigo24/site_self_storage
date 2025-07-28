@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'storage',
     'users',
     'phonenumber_field',
+    'django_select2'
 ]
 
 MIDDLEWARE = [
@@ -92,7 +93,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+
 
 TIME_ZONE = 'UTC'
 
@@ -115,3 +116,11 @@ SITE_URL = 'http://localhost:8000'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LANGUAGE_CODE = 'ru-ru'
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('ru-ru', 'Русский'),
+]
+
+I18N_AVAILABLE_LANGUAGES=['ru']
