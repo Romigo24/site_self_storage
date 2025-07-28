@@ -89,17 +89,19 @@ def create_order(request):
         box = Box.objects.get(id=box_id)
         start_storage = datetime.strptime(start_storage, '%Y-%m-%d').date()
         end_storage = datetime.strptime(end_storage, '%Y-%m-%d').date()
-
+        price = (end_storage - start_storage).days * box.cell_size.price_per_month
 
         order = Order(cell=box, start_storage=start_storage, end_storage=end_storage, node=node, cuser=user)
         if promo_name:
             promo = Promo.objects.get(name=promo_name)
             order.promo = promo
+            price = price * promo.discount
         if courier_id:
             courier = Courier.objects.get(id=courier_id)
             courier.is_active = True
             courier.save()
             order.courier = courier
+        order.total_price = price
         box.is_occupied = True
         box.save()
         order.save()
