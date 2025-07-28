@@ -127,6 +127,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('ru-ru', 'Русский'),
+]
 
-
-
+I18N_AVAILABLE_LANGUAGES=['ru']

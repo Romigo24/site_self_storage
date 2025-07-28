@@ -65,3 +65,7 @@ class BoxAdmin(admin.ModelAdmin):
 class PromoAdmin(admin.ModelAdmin):
     list_display = ('name','discount','is_active')
     list_filter = ('is_active',)
+
+@admin.register(Place)
+class PlaceAdmin(admin.ModelAdmin):
+    pass

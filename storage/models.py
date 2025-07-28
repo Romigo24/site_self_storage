@@ -25,6 +25,10 @@ class Courier(models.Model):
         verbose_name='Тип доставки',
     )
     is_active = models.BooleanField(default=True)
+    class Meta:
+        verbose_name='Курьер'
+        verbose_name_plural='Курьеры'
+
     def __str__(self):
         return f"{self.name} ({self.get_vehicle_type_display()})"
 
@@ -33,6 +37,10 @@ class Promo(models.Model):
     name = models.CharField(max_length=100)
     discount = models.DecimalField(decimal_places=2, max_digits=5)
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name='Акция'
+        verbose_name_plural='Акции'
 
     def __str__(self):
         return f"{self.name} {self.discount}%"
@@ -51,6 +59,10 @@ class Place(models.Model):
     image = models.ImageField(upload_to='places/', null=True, blank=True,
                               verbose_name="Изображение склада")
 
+    class Meta:
+        verbose_name='Склад'
+        verbose_name_plural='Склады'
+
     def __str__(self):
         return f'{self.name}, {self.address}'
 
@@ -65,6 +77,10 @@ class BoxTariff(models.Model):
         decimal_places=2,
         verbose_name='Цена аренды, руб.'
     )
+
+    class Meta:
+        verbose_name='Тариф'
+        verbose_name_plural='Тариф'
 
     def __str__(self):
         return f'Размер, м2: {self.size}; цена, руб.: {self.price_per_month}'
@@ -86,6 +102,10 @@ class Box(models.Model):
         default=False,
         verbose_name='Бокс занят'
     )
+
+    class Meta:
+        verbose_name='Бокс'
+        verbose_name_plural='Бокс'
 
     def __str__(self):
         status = "занят" if self.is_occupied else "свободен"
