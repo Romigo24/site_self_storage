@@ -4,103 +4,199 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-    <main class="container mt-header ">
-        <div class="row" role="tablist">
-            {% include "includes/small-menu.html" %}
-            <div class="col-lg-9">
-                <div class="card tab-content p-5">
-                        <h1 class="fw-bold SelfStorage_green mb-3">Добрый день, {{ user.first_name }}!</h1>
-                        {% if has_expiring %}
-                            <h4 class="SelfStorage_grey my-3">
-                                Срок одного или нескольких заказов подходит к концу!<br>
-                            </h4>
-                        {% endif %}
+<main class="container mt-header">
+  <div class="row" role="tablist">
+    {% include "includes/small-menu.html" %}
+    <div class="col-lg-9">
+      <div class="card tab-content p-5">
+        <h1 class="fw-bold SelfStorage_green mb-3">Добрый день, {{ user.first_name }}!</h1>
 
+        {% if has_expiring %}
+        <h4 class="SelfStorage_grey my-3">
+          Срок одного или нескольких заказов подходит к концу!<br>
+        </h4>
+        {% endif %}
 
-                        <a href="#" class="SelfStorage_orange mb-5"  data-bs-toggle="modal" data-bs-target="#rentModal">История аренды</a>
-                        <div class="modal fade" id="rentModal" tabindex="-1" aria-labelledby="rentModalLabel" aria-hidden="true">
-                          <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="rentModalLabel">Перечень вещей</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                              </div>
-                              <div class="modal-body">
-                                  <h5 class="SelfStorage_gray">{{ order.node }}</h5>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+        <a href="#" class="SelfStorage_orange mb-5" data-bs-toggle="modal" data-bs-target="#rentModal">История аренды</a>
 
+        <div class="modal fade" id="rentModal" tabindex="-1" aria-labelledby="rentModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="rentModalLabel">История аренды</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+              </div>
 
-                        {% if orders %}
-                            {% for order in orders %}
-                                <div class="mb-5 pt-2">
-                                    {% if order.days_left != None and order.days_left <= 3 %}
-                                        <h5 class="SelfStorage_grey my-3">
-                                          Срок аренды подходит к концу. Вы можете продлить аренду или забрать вещи до {{ order.end_storage|date:"d.m.Y" }} включительно.
-                                        </h5>
-                                      {% endif %}
-                                    <h4 class="SelfStorage_green">{{ order.cell.address.name }}</h4>
-                                    <h4>{{ order.cell.address.address }}</h4>
-                                    <h4 class="SelfStorage_green">{{ order.cell.cell_size.size }}</h4>
-                                    <h4>{{ order.id }}</h4>
-                                    <h4 class="SelfStorage_green">Срок аренды</h4>
-                                    <h4>{{ order.start_storage|date:"d.m.Y" }} — {{ order.end_storage|date:"d.m.Y" }}</h4>
-                                    <div>
-                                        <form action="{% url 'storage:extend_rent' order.id %}" method="post">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_green SelfStorage__btn2_green mb-3">
-                                                Продлить аренду
-                                            </button>
-                                        </form>
-                                    </div>
-                                    <div>
-                                        <button type="button" class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3" data-bs-toggle="modal" data-bs-target="#boxModal">
-                                          Открыть бокс
-                                        </button>
-                                    </div>
-                                    <div class="modal fade" id="boxModal" tabindex="-1" aria-labelledby="boxModalLabel" aria-hidden="true">
-                                      <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                                            <h5 class="modal-title" id="boxModalLabel">Перечень вещей</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                                          </div>
-                                          <div class="modal-body">
-                                              <h5 class="SelfStorage_gray">{{ order.node }}</h5>
-                                          </div>
-                                          <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <a href="#" class="SelfStorage_orange">Нужна помощь?</a>
-                                </div>
+              {% if history_orders %}
+				  {% for order in history_orders %}
+				  <div class="modal-body pe-3 mb-5 pt-2">
+					<h4 class="SelfStorage_green">
+					  <span class="SelfStorage_gray my_text_size">Склад: </span>
+					  <span class="SelfStorage_green my_text_size">{{ order.cell.address.name }}</span>
+					</h4>
 
-                            {% endfor %}
-                        {% else %}
-                          <h4>У вас нет заказов.</h4>
-                        {% endif %}
-                </div>
+					<h4>
+					  <span class="SelfStorage_gray my_text_size">Адрес: </span>
+					  <span class="SelfStorage_green my_text_size">{{ order.cell.address.address }}</span>
+					</h4>
+
+					<h4 class="SelfStorage_green">
+					  <span class="SelfStorage_gray my_text_size">Размер контейнера: </span>
+					  <span class="SelfStorage_green my_text_size">{{ order.cell.cell_size.size }}</span>
+					  <span class="SelfStorage_gray my_text_size">м2</span>
+					</h4>
+
+					<h4>
+					  <span class="SelfStorage_gray my_text_size">№: </span>
+					  <span class="SelfStorage_green my_text_size">{{ order.id }}</span>
+					</h4>
+
+					<h4 class="SelfStorage_green">
+					  <span class="SelfStorage_gray my_text_size">Срок аренды: </span>
+					  <span class="SelfStorage_green my_text_size">
+						{{ order.start_storage|date:"d.m.Y" }} — {{ order.end_storage|date:"d.m.Y" }}
+					  </span>
+					</h4>
+                    <h4 class="SelfStorage_gray">
+                        <span class="SelfStorage_gray my_text_size">Перечень вещей: </span>
+					</h4>
+                    <h4 class="SelfStorage_green">
+                        <span class="SelfStorage_gray my_text_size">{{ order.node }}</span>
+                    </h4>
+					<a href="#" class="SelfStorage_orange">Нужна помощь?</a>
+				  </div>
+				  {% endfor %}
+              {% else %}
+				  <div class="my_box_size">
+					<h4 class="SelfStorage_green">
+					  <span class="SelfStorage_gray my_text_size">У вас нет истории аренды.</span>
+					</h4>
+				  </div>
+              {% endif %}
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+              </div>
             </div>
+          </div>
         </div>
-    </main>
+
+        {% if active_orders %}
+			{% for order in active_orders %}
+			<div class="mb-5 pt-2">
+			  {% if order.days_left != None and order.days_left <= 3 %}
+			  <h5 class="SelfStorage_grey my-3">
+				Срок аренды подходит к концу. Вы можете продлить аренду или забрать вещи до {{ order.end_storage|date:"d.m.Y" }} включительно.
+			  </h5>
+			  {% endif %}
+
+			  <h4 class="SelfStorage_green">
+				<span class="SelfStorage_gray my_text_size">Склад: </span>
+				<span class="SelfStorage_green my_text_size">{{ order.cell.address.name }}</span>
+			  </h4>
+			  <h4>
+				<span class="SelfStorage_gray my_text_size">Адрес: </span>
+				<span class="SelfStorage_green my_text_size">{{ order.cell.address.address }}</span>
+			  </h4>
+			  <h4 class="SelfStorage_green">
+				<span class="SelfStorage_gray my_text_size">Размер контейнера: </span>
+				<span class="SelfStorage_green my_text_size">{{ order.cell.cell_size.size }}</span>
+				<span class="SelfStorage_gray my_text_size">м2</span>
+			  </h4>
+			  <h4>
+				<span class="SelfStorage_gray my_text_size">№: </span>
+				<span class="SelfStorage_green my_text_size">{{ order.id }}</span>
+			  </h4>
+			  <h4 class="SelfStorage_green">
+				<span class="SelfStorage_gray my_text_size">Срок аренды: </span>
+				<span class="SelfStorage_green my_text_size">{{ order.start_storage|date:"d.m.Y" }} — {{ order.end_storage|date:"d.m.Y" }}</span>
+			  </h4>
+
+			  <div class="my_top">
+				<form action="{% url 'storage:extend_rent' order.id %}" method="post">
+				  {% csrf_token %}
+				  <button type="button" class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_green SelfStorage__btn2_green mb-3" data-bs-toggle="modal" data-bs-target="#extendModal{{ order.id }}">
+                      Продлить аренду
+                  </button>
+				</form>
+			  </div>
+
+
+
+
+
+                <div class="modal fade" id="extendModal{{ order.id }}" tabindex="-1" aria-labelledby="extendModalLabel{{ order.id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form action="{% url 'storage:extend_rent' order.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="extendModalLabel{{ order.id }}">Продлить аренду</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                          <label for="days" class="form-label">На сколько дней продлить?</label>
+                          <input type="number" name="days" id="days" class="form-control" min="1" max="365" required>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                          <button type="submit" class="btn btn-success">Подтвердить</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+
+
+
+
+			  <div>
+				<button type="button" class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3" data-bs-toggle="modal" data-bs-target="#boxModal{{ order.id }}">
+				  Открыть бокс
+				</button>
+			  </div>
+			  <div class="modal fade" id="boxModal{{ order.id }}" tabindex="-1" aria-labelledby="boxModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <h5 class="modal-title" id="ModalLabel">Перечень вещей</h5>
+					  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+					</div>
+					<div class="modal-body">
+					  <h5 class="SelfStorage_gray">{{ order.node }}</h5>
+					</div>
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			  <a href="#" class="SelfStorage_orange">Нужна помощь?</a>
+			</div>
+			{% endfor %}
+		{% else %}
+		<div class="my_box_size">
+		  <h4 class="SelfStorage_green">
+			<span class="SelfStorage_gray my_text_size">У вас нет активной аренды.</span>
+		  </h4>
+		</div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</main>
 {% else %}
-    <main class="container mt-header">
-        <div class="row top-up butt-up" role="tablist">
-            <span class="fs_24 ">Войдите в учетную запись
-                <a class="fs_24 SelfStorage_orange" href=
-                        "{% url 'users:login' %}">войти</a>,
-                 или
-                 <a class=" fs_24 SelfStorage_orange" href=
-                         "{% url 'users:login' %}">зарегистрируйтесь</a>.
-            </span>
-        </div>
-    </main>
+<main class="container mt-header">
+  <div class="row top-up butt-up" role="tablist">
+    <span class="fs_24">Войдите в учетную запись
+      <a class="fs_24 SelfStorage_orange" href="{% url 'users:login' %}">войти</a>, или
+      <a class="fs_24 SelfStorage_orange" href="{% url 'users:login' %}">зарегистрируйтесь</a>.
+    </span>
+  </div>
+</main>
 {% endif %}
 {% endblock %}

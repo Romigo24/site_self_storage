@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from datetime import timedelta
+from django.utils import timezone
 from storage.models import Order
 from .forms import OrderForm
 from django.contrib.auth.decorators import login_required
@@ -17,36 +18,42 @@ def boxes(request):
 def faq(request):
     return render(request, 'faq.html')
 
-
+@login_required
 def my_rent(request):
-    if not request.user.is_authenticated:
-        return redirect('users:login')
-
     user_orders = Order.objects.filter(cuser=request.user)
+    active_statuses = ['unprocessed', 'underway', 'delivery']
 
-    has_expiring = any(
-        order.days_left is not None and order.days_left <= 3
-        for order in user_orders
-    )
+    active_orders = user_orders.filter(status__in=active_statuses)
+    history_orders = user_orders.exclude(status__in=active_statuses)
+
+    has_expiring = active_orders.filter(
+        end_storage__lte=timezone.now() + timedelta(days=3)
+    ).exists()
 
     return render(
         request,
         'my-rent.html',
         {
-            'orders': user_orders,
+            'active_orders': active_orders,
+            'history_orders': history_orders,
             'has_expiring': has_expiring,
         }
     )
 
 
+@login_required
 def extend_rent(request, order_id):
-    if not request.user.is_authenticated:
-        return redirect('users:login')
-
     order = get_object_or_404(Order, id=order_id, cuser=request.user)
 
-    order.end_storage += timedelta(days=7)
-    order.save()
+    if request.method == 'POST':
+        try:
+            days = int(request.POST.get('days', '0'))
+            if days > 0:
+                order.end_storage += timedelta(days=days)
+                order.save()
+        except (ValueError, TypeError):
+            pass
+
     return redirect('storage:my_rent')
 
 

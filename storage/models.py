@@ -151,7 +151,10 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f'{self.cuser.first_name}, {self.cuser.phone}'
+        return (
+            f'{self.id} - {self.cuser.last_name} {self.cuser.first_name},'
+            f' {self.cuser.phone} - {self.get_status_display()}'
+        )
 
     #Добавить подсчет промокода
     def save(self, *args, **kwargs):

@@ -161,3 +161,15 @@ body {
 .butt-up {
     margin-bottom: 215px;
 }
+
+.my_text_size {
+    font-size: 24px !important;
+}
+.my_top {
+     margin-top: 30px !important;
+}
+.my_box_size {
+    margin-top: 100px;
+    margin-bottom: 100px;
+    text-align: center;
+}
