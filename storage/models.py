@@ -99,6 +99,18 @@ class Place(models.Model):
         verbose_name="Изображение склада"
     )
 
+    @property
+    def monthly_price(self):
+        cheapest_box = Box.objects.filter(
+            address=self,
+            is_occupied=False
+        ).select_related('cell_size').order_by(
+            'cell_size__price_per_month').first()
+
+        if cheapest_box:
+            return cheapest_box.cell_size.price_per_month * 30
+        return None
+
     def update_box_counts(self):
         self.box_capacity = self.box_set.count()
         self.available_boxes = self.box_set.filter(is_occupied=False).count()

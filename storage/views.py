@@ -13,26 +13,6 @@ from datetime import datetime
 from django.db.models import Min
 
 
-def get_monthly_price(places):
-    for place in places:
-        place.update_box_counts()
-
-        cheapest_box = Box.objects.filter(
-            address=place,
-            is_occupied=False
-        ).select_related(
-            'cell_size'
-        ).order_by(
-            'cell_size__price_per_month').first()
-
-        if cheapest_box:
-            place.monthly_price = cheapest_box.cell_size.price_per_month * 30
-        else:
-            place.monthly_price = None
-
-    return places
-
-
 def index(request):
     try:
         storage = Place.objects.get(is_show=True)
@@ -84,7 +64,9 @@ def boxes(request):
     create_order_form = CreateOrderForm()
 
     # Получаем все места (склады)
-    places = get_monthly_price(Place.objects.all().order_by('name'))
+    places = Place.objects.all().order_by('name')
+    for place in places:
+        place.update_box_counts()
 
     # Получаем выбранный склад из параметра запроса
     selected_place_id = request.GET.get('place_id')
@@ -239,7 +221,8 @@ def create_order(request):
         box = Box.objects.get(id=box_id)
         start_storage = datetime.strptime(start_storage, '%Y-%m-%d').date()
         end_storage = datetime.strptime(end_storage, '%Y-%m-%d').date()
-        price = (end_storage - start_storage).days * box.cell_size.price_per_month
+        price = (
+                        end_storage - start_storage).days * box.cell_size.price_per_month
 
         order = Order(cell=box, start_storage=start_storage,
                       end_storage=end_storage, node=node, cuser=user)
