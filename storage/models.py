@@ -4,6 +4,7 @@ from users.models import CustomUser
 from datetime import date
 from phonenumber_field.modelfields import PhoneNumberField
 
+
 class Courier(models.Model):
     name = models.CharField(
         max_length=100,
@@ -25,9 +26,10 @@ class Courier(models.Model):
         verbose_name='Тип доставки'
     )
     is_active = models.BooleanField(default=True)
+
     class Meta:
-        verbose_name='Курьер'
-        verbose_name_plural='Курьеры'
+        verbose_name = 'Курьер'
+        verbose_name_plural = 'Курьеры'
 
     def __str__(self):
         return f"{self.name} ({self.get_vehicle_type_display()})"
@@ -39,8 +41,8 @@ class Promo(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name='Акция'
-        verbose_name_plural='Акции'
+        verbose_name = 'Акция'
+        verbose_name_plural = 'Акции'
 
     def __str__(self):
         return f"{self.name} {self.discount}%"
@@ -54,7 +56,7 @@ class Place(models.Model):
     )
     address = models.CharField(
         max_length=200,
-        verbose_name = 'Адрес'
+        verbose_name='Адрес'
     )
     temperature = models.IntegerField(
         default=18,
@@ -92,8 +94,8 @@ class Place(models.Model):
     )
 
     class Meta:
-        verbose_name='Склад'
-        verbose_name_plural='Склады'
+        verbose_name = 'Склад'
+        verbose_name_plural = 'Склады'
 
     def __str__(self):
         return f'{self.name}, {self.address}'
@@ -111,11 +113,11 @@ class BoxTariff(models.Model):
     )
 
     class Meta:
-        verbose_name='Тариф'
-        verbose_name_plural='Тариф'
+        verbose_name = 'Тариф'
+        verbose_name_plural = 'Тарифы'
 
     def __str__(self):
-        return f'Размер, м2: {self.size}; цена, руб.: {self.price_per_month}'
+        return f'Размер: {self.size} м2; цена: {self.price_per_month} руб.'
 
 
 class Box(models.Model):
@@ -136,8 +138,8 @@ class Box(models.Model):
     )
 
     class Meta:
-        verbose_name='Бокс'
-        verbose_name_plural='Бокс'
+        verbose_name = 'Бокс'
+        verbose_name_plural = 'Боксы'
 
     def __str__(self):
         status = "занят" if self.is_occupied else "свободен"
@@ -209,7 +211,7 @@ class Order(models.Model):
             f' {self.cuser.phone} - {self.get_status_display()}'
         )
 
-    #Добавить подсчет промокода
+    # Добавить подсчет промокода
     def save(self, *args, **kwargs):
         price_per_day = self.cell.cell_size.price_per_month
         days = (self.end_storage - self.start_storage).days
@@ -222,6 +224,9 @@ class Order(models.Model):
             return (self.end_storage - date.today()).days
         return None
 
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
 
 
 class ClickCounter(models.Model):
@@ -237,5 +242,3 @@ class ClickCounter(models.Model):
 
     def get_absolute_url(self, request):
         return f"{request.scheme}://{request.get_host()}/?ref={self.token}"
-
-

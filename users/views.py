@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from users.forms import CustomUserCreationForm
+from users.models import CustomUser
 
 
 def register_user(request):
@@ -21,6 +22,7 @@ def register_user(request):
         'register.html',
         {'form': form}
     )
+
 
 def login_view(request):
     if request.method == 'POST':
