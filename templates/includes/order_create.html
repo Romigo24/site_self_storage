@@ -91,7 +91,9 @@
                             </div>
                         {% endif %}
                     </div>
-
+                    <div id="order-success-message" class="alert alert-success mt-3" style="display: none;">
+                        Заказ успешно создан!
+                    </div>
                     <button type="submit" class="btn btn-primary">Оформить заказ</button>
                 </form>
             </div>
@@ -145,13 +147,28 @@
         function formSubmit(formData) {
             const url = `/create_order/`
             fetch(url, {
-                method:'POST',
-                body:formData,
+                method: 'POST',
+                body: formData,
             })
-                .then(response => response.json())
-                .catch(error => {
-                    console.log("Error",error)
-                })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const successMessage = document.getElementById('order-success-message');
+                        successMessage.style.display = 'block';
+
+                        setTimeout(() => {
+                            $('#orderModal').modal('hide');
+                            resetForm();
+                            successMessage.style.display = 'none';
+                        }, 2000);
+                } else {
+                    alert("Ошибка при создании заказа.");
+                }
+            })
+            .catch(error => {
+                console.log("Error", error);
+                alert("Ошибка при отправке формы");
+            });
         }
 
 
@@ -161,11 +178,12 @@
             defaultOption.value = '';
             defaultOption.textContent = 'Выберите бокс';
             boxSelect.appendChild(defaultOption);
+
             boxesData.forEach(box => {
-                const option = document.createElement('option')
-                option.value = box.id
-                option.textContent = box.cell_size_name + ' ' + box.cell_size_price
-               boxSelect.add(option);
+                const option = document.createElement('option');
+                option.value = box.id;
+                option.textContent = box.display;
+                boxSelect.appendChild(option);
             });
         }
 

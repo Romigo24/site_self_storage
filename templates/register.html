@@ -6,7 +6,7 @@
         <form method="POST" action="{% url 'users:register' %}" class="d-flex flex-column align-items-center" style="max-width: 420px">
             {% csrf_token %}
         <h1 class="fw-bold mb-3">Регистрация</h1>
-        <input type="email" name="{{ form.first_name.name }}" required
+        <input type="text" name="{{ form.first_name.name }}" required
                class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
                SelfStorage__bg_lightgrey"
                placeholder="Имя" value="{{ form.first_name.value|default_if_none:'' }}">
@@ -17,7 +17,7 @@
            placeholder="Фамилия" value="{{form.last_name.value|default_if_none:'' }}">
         {{ form.last_name.errors }}
 
-        <input type="text" name="{{ form.email.name }}" required
+        <input type="email" name="{{ form.email.name }}" required
                class="form-control border-8 mb-3 py-3 px-5 border-0 fs_20
                SelfStorage__bg_lightgrey"
                placeholder="E-mail" value="{{ form.email.value|default_if_none:'' }}">

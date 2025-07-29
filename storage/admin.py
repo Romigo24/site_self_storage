@@ -28,7 +28,14 @@ class ClickCounterAdmin(admin.ModelAdmin):
 
 @admin.register(Place)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        'name',
+        'address',
+        'box_capacity',
+        'available_boxes',
+        'is_show'
+    )
+    readonly_fields = ('box_capacity', 'available_boxes')
 
 
 @admin.register(Order)
@@ -46,8 +53,6 @@ class OrderAdmin(admin.ModelAdmin):
         'courier',
         'registered_at',
     ]
-
-    pass
 
 
 @admin.register(Courier)

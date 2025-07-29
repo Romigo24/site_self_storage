@@ -36,9 +36,19 @@ class Courier(models.Model):
 
 
 class Promo(models.Model):
-    name = models.CharField(max_length=100)
-    discount = models.DecimalField(decimal_places=2, max_digits=5)
-    is_active = models.BooleanField(default=True)
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Называние'
+    )
+    discount = models.DecimalField(
+        decimal_places=2,
+        max_digits=5,
+        verbose_name='Скидка'
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name='Активная'
+    )
 
     class Meta:
         verbose_name = 'Акция'
@@ -52,7 +62,7 @@ class Place(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(
         max_length=100,
-        verbose_name='Склад'
+        verbose_name='Название склад'
     )
     address = models.CharField(
         max_length=200,
@@ -69,22 +79,18 @@ class Place(models.Model):
         verbose_name="Высота потолка (м)"
     )
     box_capacity = models.IntegerField(
-        verbose_name="Общее количество боксов"
+        verbose_name="Общее количество боксов",
+        default = 0
     )
     available_boxes = models.IntegerField(
         verbose_name="Свободные боксы",
         default=0
     )
-    monthly_price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name="Цена за месяц",
-        default=2264
-    )
     is_show = models.BooleanField(
         default=False,
         blank=True,
-        null=True
+        null=True,
+        verbose_name="Отображение",
     )
     image = models.ImageField(
         upload_to='places/',
@@ -92,6 +98,11 @@ class Place(models.Model):
         blank=True,
         verbose_name="Изображение склада"
     )
+
+    def update_box_counts(self):
+        self.box_capacity = self.box_set.count()
+        self.available_boxes = self.box_set.filter(is_occupied=False).count()
+        self.save(update_fields=['box_capacity', 'available_boxes'])
 
     class Meta:
         verbose_name = 'Склад'
@@ -106,9 +117,7 @@ class BoxTariff(models.Model):
         max_length=100,
         verbose_name='Размер бокса, м2'
     )
-    price_per_month = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
+    price_per_month = models.IntegerField(
         verbose_name='Цена аренды, руб.'
     )
 
@@ -130,20 +139,30 @@ class Box(models.Model):
         Place,
         on_delete=models.CASCADE,
         null=True,
-        verbose_name='Адрес Склада'
+        verbose_name='Склад'
     )
     is_occupied = models.BooleanField(
         default=False,
         verbose_name='Бокс занят'
     )
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.address:
+            self.address.update_box_counts()
+
+    def delete(self, *args, **kwargs):
+        place = self.address
+        super().delete(*args, **kwargs)
+        if place:
+            place.update_box_counts()
+
     class Meta:
         verbose_name = 'Бокс'
         verbose_name_plural = 'Боксы'
 
     def __str__(self):
-        status = "занят" if self.is_occupied else "свободен"
-        return f'№ {self.id}, размер: {self.cell_size.size} м2 - ({status})'
+        return f'№ {self.id}, размер: {self.cell_size.size} м2'
 
 
 class Order(models.Model):

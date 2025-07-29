@@ -5,11 +5,33 @@ from django.contrib.auth import login
 from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import CreateOrderForm
-from django.views.decorators.http import  require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST
 from urllib.parse import unquote
 from django.contrib.auth.decorators import login_required
 from .models import Box, Place, Promo, Order, Courier
-from  datetime import datetime
+from datetime import datetime
+from django.db.models import Min
+
+
+def get_monthly_price(places):
+    for place in places:
+        place.update_box_counts()
+
+        cheapest_box = Box.objects.filter(
+            address=place,
+            is_occupied=False
+        ).select_related(
+            'cell_size'
+        ).order_by(
+            'cell_size__price_per_month').first()
+
+        if cheapest_box:
+            place.monthly_price = cheapest_box.cell_size.price_per_month * 30
+        else:
+            place.monthly_price = None
+
+    return places
+
 
 def index(request):
     try:
@@ -21,14 +43,20 @@ def index(request):
 
     create_order_form = CreateOrderForm()
 
+    min_price = Box.objects.filter(is_occupied=False).aggregate(
+        Min('cell_size__price_per_month')
+    )['cell_size__price_per_month__min']
+
     return render(
         request,
         'index.html',
         {
             'create_order_form': create_order_form,
             'storage': storage,
+            'min_price': min_price,
         }
     )
+
 
 # def boxes(request):
 #     # Получаем все места (склады)
@@ -53,15 +81,18 @@ def index(request):
 
 #     return render(request, 'boxes.html', context)
 def boxes(request):
+    create_order_form = CreateOrderForm()
+
     # Получаем все места (склады)
-    places = Place.objects.all().order_by('name')
+    places = get_monthly_price(Place.objects.all().order_by('name'))
 
     # Получаем выбранный склад из параметра запроса
     selected_place_id = request.GET.get('place_id')
 
     # Если склад выбран, фильтруем боксы по этому складу, иначе показываем все
     if selected_place_id:
-        boxes = Box.objects.select_related('cell_size', 'address').filter(address_id=selected_place_id)
+        boxes = Box.objects.select_related('cell_size', 'address').filter(
+            address_id=selected_place_id)
     else:
         boxes = Box.objects.select_related('cell_size', 'address').all()
 
@@ -72,8 +103,10 @@ def boxes(request):
     boxes_from10 = boxes.filter(cell_size__size__gt=10)
 
     context = {
+        'create_order_form': create_order_form,
         'places': places,
-        'selected_place_id': int(selected_place_id) if selected_place_id else None,
+        'selected_place_id': int(
+            selected_place_id) if selected_place_id else None,
         'boxes_all': boxes_all,
         'boxes_to3': boxes_to3,
         'boxes_to10': boxes_to10,
@@ -84,7 +117,18 @@ def boxes(request):
 
 
 def faq(request):
-    return render(request, 'faq.html')
+    create_order_form = CreateOrderForm()
+
+    context = {
+        'create_order_form': create_order_form,
+    }
+
+    return render(
+        request,
+        'faq.html',
+        context
+    )
+
 
 @login_required
 def my_rent(request):
@@ -128,6 +172,7 @@ def extend_rent(request, order_id):
 def my_rent_empty(request):
     return render(request, 'my-rent-empty.html')
 
+
 @require_GET
 def get_boxes(request):
     try:
@@ -139,6 +184,7 @@ def get_boxes(request):
             boxes_data = [
                 {
                     'id': box.id,
+                    'display': str(box),
                     'cell_size_price': box.cell_size.price_per_month,
                     'cell_size_name': str(box.cell_size.size),
                     'is_occupied': box.is_occupied,
@@ -154,7 +200,7 @@ def get_boxes(request):
             return JsonResponse({'boxes': []}, status=404)
 
     except Exception as e:
-        return  JsonResponse({'error': str(e)}, status=400)
+        return JsonResponse({'error': str(e)}, status=400)
 
 
 @require_GET
@@ -195,7 +241,8 @@ def create_order(request):
         end_storage = datetime.strptime(end_storage, '%Y-%m-%d').date()
         price = (end_storage - start_storage).days * box.cell_size.price_per_month
 
-        order = Order(cell=box, start_storage=start_storage, end_storage=end_storage, node=node, cuser=user)
+        order = Order(cell=box, start_storage=start_storage,
+                      end_storage=end_storage, node=node, cuser=user)
         if promo_name:
             promo = Promo.objects.get(name=promo_name)
             order.promo = promo
@@ -209,9 +256,10 @@ def create_order(request):
         box.is_occupied = True
         box.save()
         order.save()
-        return JsonResponse({"create_order":True}, status=200)
+        return JsonResponse({"success": True}, status=200)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
 
 @login_required
 def lk(request):
